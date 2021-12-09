@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title> Test Page </title>
+</head>
+
+<body>
+<h1> COVID-19 Airborne Transmission Risk Calculator </h1>
+Needed: a simple explanation of how this model works. Probably needs a picture or two. <br>
+Then insert link to the <a href="https://arxiv.org/pdf/2012.12267.pdf">paper</a>.
+
+<h2>Needed: A form for the user to enter the inputs of the algorithm. </h2>
+Inputs required are floats. Also requires form to check that the inputs are positive numbers. <br>
+Inputs are blank unless specified otherwise. 
+
+<h3>Category 1: Room Properties</h3> 
+Room length  (m), l <br>
+Room width (m), w <br>
+Room height (m), h <br>
+Ventilation: Air Changes per Hour (h^{-1}), Q -- requires dropdown list with common options, and option for user to input their own value<br>
+Airflow velocity (m), (v_x,v_y) -- might change this input to make it more user friendly: to only choose a direction of the airflow loop<br>
+
+<h3>Category 2: Event Properties</h3>
+Time (h), time <br>
+Coordinates of infectious person (m), (x_o,y_o) <br>
+Fraction of time the infectious person spends talking, frac_speak <br>
+Coordinates of susceptible person (m), (x,y) -- want interactive form to allow user to input the number of susceptible persons and the coordinates of each <br>
+
+<h3>Submit buttons</h3>
+
+<h3>Advanced options</h3>
+This part of the form to be shown only if user clicks on the link. Values to this part of the form should be prefilled with recommended values.
+<h4> Accuracy</h4>
+With warning: that smaller figures lead to more accurate results, but longer run times. <br>
+Time step (s) <br>
+delta_x (m) <br>
+delta_y (m) <br>
+<h4>Virus Parameters </h4>
+Particle settling rate, s (s^{-1}) <br>
+Virus deactivation rate, d (s^{-1}) <br>
+Conversion rate from infectious particles to infectious quantum, k -- requires link to explanation and rational for value <br>
+<h4> Behaviourial Parameters </h4>
+With warning: change with caution <br>
+Passive infectious particle emission rate (particles/s), R <br>
+Type of mask worn by infectious person -- a dropdown list, mask_ex <br>
+Average breathing rate of susceptible person, p -- a dropdown list <br>
+Type of mask worn by susceptible persons -- a dropdown list, mask_in <br>
+
+<h2>Sample Results (ie. graphs)</h2>
+
+<h3>Concentration vs time graph </h3>
+<div id="C-vs-t" style="width:70%"> </div>
+
+<h3>Infection Risk vs time graph </h3>
+<div id="P-vs-t"  style="width:70%"> </div>
+
+<h3>Concentration contour plot </h3>
+<div id="C-Contour"  style="width:70%"> </div>
+
+<h3>Infection Risk contour plot </h3>
+Needed: Image is loading symbol.
+<div id="P-Contour"  style="width:70%"> </div>
+-->
+</body>
+
+<script src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+<script type="text/javascript" src="scripts/functions.js"></script>
+<script type="text/javascript" src="scripts/main.js"></script>
+
+</html>
