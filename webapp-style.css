@@ -1,9 +1,9 @@
-/* To make labels next to sliders align well */
 label {
     width: 180px;
     display: inline-block;
 }
 
+/*** the slider to toggle between concentration & infection risk; between contour and line graphs ***/
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -51,8 +51,9 @@ input:checked + .slider:before {
   -ms-transform: translateX(35px);
   transform: translateX(35px);
 }
+/****  switch end ****/
 
-/* loading image*/
+/*** loading image to be shown if the graph takes a long time to load***/
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
@@ -65,8 +66,9 @@ input:checked + .slider:before {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/** loading image end**/
 
-/*hover for more details*/
+/****hover for more details*****/
 .details{
   display:none;
   color:grey;
@@ -86,17 +88,18 @@ input:checked + .slider:before {
   float:left;
   width:325px;
 }
+/*** hover end ***/
 
-/*align boxes*/
+/****align boxes for parameter input****/
 .boxed{
   float: left;
   border-style:solid;
   padding:10px;
 }
-
-/*center button*/
+/****center button inside the boxes****/
 .center_button{
   display: flex;
   justify-content: center;
   align-items: center;
 }
+/** end boxes **/
