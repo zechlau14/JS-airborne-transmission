@@ -163,9 +163,13 @@ function run_risk(){
         var mask_ex = document.getElementById("inf-mask").value;
         mask_ex = parseFloat(mask_ex);
     }     
-    var frac_speak = document.getElementById("talk").value;
-    frac_speak = parseFloat(frac_speak);
-    frac_speak = frac_speak*0.01;
+    var frac_speak_c = document.getElementById("talk-custom").value;
+    if(frac_speak_c>0){
+        var frac_speak = parseFloat(frac_speak_c) / 100;
+    }else{
+        var frac_speak = document.getElementById("talk").value;
+        frac_speak = parseFloat(frac_speak) / 100;
+    }  
     var R_c = document.getElementById("viral-load-custom").value;
     if(R_c>0){
         var R = Math.log(parseFloat(R_c)) / Math.log(10);
@@ -333,9 +337,14 @@ function run_conc(){
         var mask_ex = document.getElementById("inf-mask").value;
         mask_ex = parseFloat(mask_ex);
     }     
-    var frac_speak = document.getElementById("talk").value;
-    frac_speak = parseFloat(frac_speak);
-    frac_speak = frac_speak*0.01;
+    var frac_speak_c = document.getElementById("talk-custom").value;
+    if(frac_speak_c>0){
+        var frac_speak = parseFloat(frac_speak_c) / 100;
+    }else{
+        var frac_speak = document.getElementById("talk").value;
+        frac_speak = parseFloat(frac_speak) / 100;
+    }  
+    console.log(frac_speak);
     var R_c = document.getElementById("viral-load-custom").value;
     if(R_c>0){
         var R = Math.log(parseFloat(R_c)) / Math.log(10);
