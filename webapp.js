@@ -28,6 +28,36 @@ function model_choice(){
     }
 }
 
+function graph_choice2(){
+    //check result of dropdown switch "contour-or-point"
+    //if box is checked show inputs for coordinates; else hide
+
+    var checkBox = document.getElementById("contour=point".value);
+    var coord_input = document.getElementById("coord-eval");
+
+    if(checkBox == 0){
+        coord_input.style.display='none';
+    } else{
+        coord_input.style.display='block';
+    }
+}
+
+function model_choice2(){
+    //check the toggle switch for risk or concentration
+    //show the button that runs the correct function.
+    var checkBox = document.getElementById("risk=conc").value;
+    var risk_button = document.getElementById("run-risk");
+    var conc_button = document.getElementById("run-conc");
+
+    if(checkBox == 0){
+        conc_button.style.display='none';
+        risk_button.style.display='block';
+    } else{
+        risk_button.style.display='none';
+        conc_button.style.display='block';
+    }
+}
+
 function add_break(){
     //check the checkbox for adding a break
     //if checked, show the inputs for a break.
@@ -48,18 +78,22 @@ function advanced_options(){
     //function for advanced options button
     //when button is pressed, show the advanced-options inputs
     var checkBox = document.getElementById("advanced-options");
+    var stepBox = document.getElementById("step-size");
     if(checkBox.style.display == "none"){
         checkBox.style.display = "block";
+        stepBox.style.display = "block";
     } else{
         checkBox.style.display = "none";
+        stepBox.style.display = "none";
     }
 }
 
 //variables
-const delta_x = 0.1;
-const delta_y = 0.1;
-const s = 3.397*10**(-5);
-const delta_t = 1;
+//const delta_x = 0.1;
+//const delta_y = 0.1;
+//const s = 3.397*10**(-5);
+//const delta_t = 1;
+const r = 1;
 
 function run_risk(){
     //erase the results from previous runs of the model
@@ -141,13 +175,27 @@ function run_risk(){
     }     
     var d = document.getElementById("deact").value;
     d = parseFloat(d);
-    var r = document.getElementById("transmissibility").value;
-    r = parseFloat(r)/100;
+    var s = document.getElementById("settle").value;
+    s = parseFloat(d)/3600;
+    //var r = document.getElementById("transmissibility").value;
+    //r = parseFloat(r)/100;
+    var I_o = document.getElementById("Inf-Const").value;
+    I_o =  Math.log(2) / parseFloat(I_o);
+    var R_b = document.getElementById("emission").value;
+    R_b = parseInt(R_b) / 60;
+    var delta_t = document.getElementById("delta-t").value;
+    delta_t = parseFloat(delta_t);
+    var delta_x = document.getElementById("delta-x").value;
+    delta_x = parseFloat(delta_x);
+    var delta_y = document.getElementById("delta-y").value;
+    delta_y = parseFloat(delta_y);
 
-    var checkBox = document.getElementById("contour-or-point");
+    //var checkBox = document.getElementById("contour-or-point");
+    var checkBox = document.getElementById("contour=point").value;
     var breakBox = document.getElementById("break");
 
-    if(checkBox.checked == false){
+    //if(checkBox.checked == false){
+    if(checkBox==0){
         //if toggle button for whole room is chosen
         //calculate x and y coordinates for the graph.
         var xx = x_array(l,delta_x);
@@ -155,7 +203,7 @@ function run_risk(){
 
         if(breakBox.checked == false){
             //if no break is selected, run P_contour function
-            var zz = P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y);
+            var zz = P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y,R_b,I_o);
         } else{
             //if a break is selected, obtain those parameters, then run P_break_contour function
             var time_break = document.getElementById("break-duration").value;
@@ -163,7 +211,7 @@ function run_risk(){
             var time2 = document.getElementById("break-start").value;
             time2 = parseFloat(time2);
             var time_cont = time - time2;
-            var zz = P_break_contour(time_break,time_cont,time2,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y);
+            var zz = P_break_contour(time_break,time_cont,time2,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y,R_b,I_o);
         }
 
         //Plot results
@@ -191,7 +239,7 @@ function run_risk(){
         if(breakBox.checked == false){
             //if no break is chosen, run Prob function.
             var t_chart = t_graph(time,delta_t);
-            var zz = Prob(R,time,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in);
+            var zz = Prob(R,time,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in,R_b,I_o);
         } else{
             //if add_break is chosen, get break parameters and run Prob_break function.
             var time_break = document.getElementById("break-duration").value;
@@ -200,7 +248,7 @@ function run_risk(){
             time2 = parseFloat(time2);
             var time_cont = time - time2;
             var t_chart = t_graph(time+time_break,delta_t);
-            var zz = Prob_break(time_break,time_cont,R,time2,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in);
+            var zz = Prob_break(time_break,time_cont,R,time2,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in,R_b,I_o);
         }
         
         //plot graph
@@ -297,13 +345,27 @@ function run_conc(){
     }     
     var d = document.getElementById("deact").value;
     d = parseFloat(d);
-    var r = document.getElementById("transmissibility").value;
-    r = parseFloat(r);
+    var s = document.getElementById("settle").value;
+    s = parseFloat(d)/3600
+    //var r = document.getElementById("transmissibility").value;
+    //r = parseFloat(r)/100;
+    var I_o = document.getElementById("Inf-Const").value;
+    I_o =  Math.log(2) / parseFloat(I_o);
+    var R_b = document.getElementById("emission").value;
+    R_b = parseInt(R_b) / 60;
+    var delta_t = document.getElementById("delta-t").value;
+    delta_t = parseFloat(delta_t);
+    var delta_x = document.getElementById("delta-x").value;
+    delta_x = parseFloat(delta_x);
+    var delta_y = document.getElementById("delta-y").value;
+    delta_y = parseFloat(delta_y);
 
-    var checkBox = document.getElementById("contour-or-point");
+    //var checkBox = document.getElementById("contour-or-point");
+    var checkBox = document.getElementById("contour=point").value;
     var breakBox = document.getElementById("break");
 
-    if(checkBox.checked == false){
+    //if(checkBox.checked == false){
+    if(checkBox == 0){
     //if the toggle switch chooses the whole room
     //calc x and y values for graph.
     var xx = x_array(l,delta_x);
@@ -311,7 +373,7 @@ function run_conc(){
 
     if(breakBox.checked == false){
         //if no break is added, run C_contour function
-        var zz = C_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y);
+        var zz = C_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y,R_b);
     }else{
         //if a break is added, get break parameters and run C_break_contour function
         var time_break = document.getElementById("break-duration").value;
@@ -319,7 +381,7 @@ function run_conc(){
         var time2 = document.getElementById("break-start").value;
         time2 = parseFloat(time2);
         var time_cont = time - time2;
-        var zz = C_break_contour(time_break,time_cont,time2,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y);
+        var zz = C_break_contour(time_break,time_cont,time2,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y,R_b);
     }
     //plot contour graph
     var datapt = [{
@@ -344,7 +406,7 @@ function run_conc(){
         if(breakBox.checked == false){
             //if no break is added, run C function
             var t_chart = t_graph(time,delta_t);
-            var zz = C(R,time,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in);
+            var zz = C(R,time,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in,R_b);
         }else{
             //if break is added, get break parameters and run C_break function.
             var time_break = document.getElementById("break-duration").value;
@@ -354,7 +416,7 @@ function run_conc(){
             var time_cont = time - time2;
 
             var t_chart = t_graph(time+time_break,delta_t);
-            var zz = C_break(time_break,time_cont,R,time2,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t);
+            var zz = C_break(time_break,time_cont,R,time2,x_e,y_e,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,R_b);
         }
         //plot line graph.
         var datapt = [{

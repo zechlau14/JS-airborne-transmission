@@ -40,20 +40,22 @@
         <input type="range" id="room-length" name="room-length" min="1" max="10" value="5" step="0.1"
         oninput="this.nextElementSibling.value = this.value; pass_x_coord();">
         <output>5</output>
-    </div>
+    </div> <div class="show_details">i</div>
+    <div class="details"> dimensions of the room in the left-to-right direction. will be assigned as the x-axis.</div>
     <br>
 
     <!--room width input: slider-->
-    <div>
+    <div style="clear:left">
         <label for="room-width">Room width (m)</label>
         <input type="range" id="room-width" name="room-width" min="1" max="10" value="5" step="0.1"
         oninput="this.nextElementSibling.value = this.value; pass_y_coord();">
         <output>5</output>
-    </div>
+    </div> <div class="show_details">i</div>
+    <div class="details"> dimensions of the room in the up-to-down direction. will be assigned as the y-axis.</div>
     <br>
 
     <!--room height input: slider-->
-    <div>
+    <div style="clear:left">
         <label for="room-height">Room height (m)</label>
         <input type="range" id="room-height" name="room-height" min="2" max="4" value="2.5" step="0.1"
         oninput="this.nextElementSibling.value = this.value">
@@ -72,7 +74,7 @@
             <option value="0.7" selected> Poor (0.7 ACH)</option>
             <option value="3"> Good (3.0 ACH)</option>
             <option value="6"> Very good (6.0 ACH)</option>
-            <option value="customOption">[type a custom value]</option>
+            <option value="customOption">[custom ACH value]</option>
         </select><input type="number" id="vent-custom" name="vent-custom" style="display:none;" min="0.1" step="0.1"
             onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
     </div> <div class="show_details">i</div>
@@ -89,7 +91,7 @@
             <option value="0"> Off (0  m/s)</option>
             <option value="0.15" selected> Medium (0.15 m/s)</option>
             <option value="0.8"> High (0.8 m/s)</option>
-            <option value="customOption">[type a custom value]</option>
+            <option value="customOption">[custom airflow speed]</option>
         </select><input type="number" id="airflow-custom" name="airflow-custom" style="display:none;" min="0" step="0.05"
         onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
     </div> <br>
@@ -101,14 +103,79 @@
         <select id="airflow-dir" name="airflow-dir">
             <option value="0" selected> Left to Right</option>
             <option value="1"> Right to Left</option>
-            <option value="2"> Top to Bottom</option>
-            <option value="3"> Bottom to Top</option>
+            <!--<option value="2"> Top to Bottom</option>
+            <option value="3"> Bottom to Top</option> -->
         </select>
     </div>
     </div>
 
+    <div class="boxed">
+        <!--2nd group of parameters-->
+        <h3>The Infectious Person</h3>
+        
+        <!--x0 input: slider that depends on room length input-->
+        <div>
+            <label for="x0">x-coordinate(m)</label>
+            <input type="range" id="x0" name="x0" min="0" value="2.5" max="5" step="0.1"
+            oninput="this.nextElementSibling.value = this.value">
+            <output>2.5</output>
+        </div><br>
+        <!--y0 input: slider that depends on room width input-->
+        <div>
+            <label for="y0">y-coordinate(m)</label>
+            <input type="range" id="y0" name="y0" min="0" value="2.5" max="5" step="0.1"
+            oninput="this.nextElementSibling.value = this.value">
+            <output>2.5</output>
+        </div><br>
+    
+        <!--infector's mask input: dropdown menu, with custom value option. also has an 'i' symbol that shows more information on hover.-->
+        <div>
+            <label for="inf-mask">Mask worn (efficiency)</label>
+            <select id="inf-mask" name="inf-mask" onchange="if(this.options[this.selectedIndex].value=='customOption'){
+                toggleField(this,this.nextSibling);
+                this.selectedIndex='0';
+            }">
+                <option value="0" selected> No mask</option>
+                <option value="0.35"> 1-ply Cloth mask (35%)</option>
+                <option value="0.5"> 3-ply Cloth mask (50%)</option>
+                <option value="0.59"> Surgical mask (59%)</option>
+                <option value="0.9"> N95/FFP2 mask (95%) </option>
+                <option value="customOption">[custom mask efficiency (%)]</option>
+            </select><input type="range" id="inf-mask-custom" name="inf-mask-custom" style="display:none;" min="0" max="100" step="1" value="0"
+            onblur="if(this.value==''){toggleField(this,this.previousSibling);}" oninput="this.nextElementSibling.value = this.value + '%'; this.nextElementSibling.style='display:inline';"> </input> 
+            <output style="display:none">0</output> 
+            <!--<input type="number" id="inf-mask-custom" name="inf-mask-custom" style="display:none;" min="0" max="100" step="0.1"
+            onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input> -->
+        </div>
+        <div class="show_details">i</div>
+        <div class="details"> disclaimer on mask efficacy. Varies depending on the manufacturing quality but also on how well they are worn </div>
+        <br>
+    
+        <!--Percent of talking input: slider between 0 and 100. also has an 'i' symbol that shows more information on hover.-->
+        <div style="clear:left;">
+            <label for="talk">Talking or breathing</label>
+            <select id="talk" name="talk" onchange="if(this.options[this.selectedIndex].value=='customOption'){
+                toggleField(this,this.nextSibling);
+                this.selectedIndex='0';
+            }">
+                <option value="100" selected> Just talking </option>
+                <option value="0"> Just breathing</option>
+                <option value="customOption">[custom % of time talking]</option>
+            </select><input type="range" id="talk-custom" name="talk-custom" style="display:none;" min="0" max="100" step="1" value="0"
+            onblur="if(this.value==''){toggleField(this,this.previousSibling);}" oninput="this.nextElementSibling.value = this.value + '%'; this.nextElementSibling.style='display:inline';"> </input> 
+            <output style="display:none">0</output> 
+    
+            <!--<input type="range" id="talk" name="talk" min="0" max="100" value="50" step="1"
+            oninput="this.nextElementSibling.value = this.value">
+            <output>50</output> -->
+        </div>
+        <div class="show_details">i</div>
+        <div class="details"> talking releases significantly more infectious particles. In this model, we assume talking releases 10 times more particles. </div>
+        <br>
+        </div> 
+
     <div class="boxed"> 
-    <!--2nd group of parameters-->
+    <!--3rd group of parameters-->
     <h3>Event Details</h3>
 
     <!--duration input: slider-->
@@ -121,14 +188,14 @@
 
     <!--occupant activity input: dropdown menu, with custom value option. also has an 'i' symbol that shows more information on hover.-->
     <div>
-        <label for="occ-act">Occupant Activity</label>
+        <label for="occ-act">Occupant Activity (Breathing rate)</label>
         <select id="occ-act" name="occ-act" onchange="if(this.options[this.selectedIndex].value=='customOption'){
             toggleField(this,this.nextSibling);
             this.selectedIndex='0';
         }">
-            <option value="8" selected> Sedentary</option>
-            <option value="25"> Active</option>
-            <option value="customOption">[type a custom value]</option>
+            <option value="8" selected> Sedentary (8l/min)</option>
+            <option value="25"> Active (25l/min)</option>
+            <option value="customOption">[custom breathing rate]</option>
         </select><input type="number" id="occ-act-custom" name="occ-act-custom" style="display:none;" min="0" step="0.5"
         onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
     </div> <div class="show_details">i</div>
@@ -146,9 +213,12 @@
             <option value="0.2"> 3-ply Cloth mask (20%)</option>
             <option value="0.5"> Surgical mask (50%)</option>
             <option value="0.9"> N95/FFP2 mask (90%) </option>
-            <option value="customOption">[type a custom value]</option>
-        </select><input type="number" id="occ-mask-custom" name="occ-mask-custom" style="display:none;" min="0" max="100" step="0.1"
-        onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
+            <option value="customOption">[custom mask efficiency (%)]</option>
+        </select><input type="range" id="occ-mask-custom" name="occ-mask-custom" style="display:none;" min="0" max="100" step="1" value="0"
+        onblur="if(this.value==''){toggleField(this,this.previousSibling);}" oninput="this.nextElementSibling.value = this.value + '%'; this.nextElementSibling.style='display:inline';"> </input> 
+        <output style="display:none">0</output> 
+        <!--<input type="number" id="occ-mask-custom" name="occ-mask-custom" style="display:none;" min="0" max="100" step="0.1"
+        onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input> -->
     </div><div class="show_details">i</div>
     <div class="details"> disclaimer on mask efficacy. Varies depending on the manufacturing quality but also on how well they are worn </div>
     <br>
@@ -171,120 +241,127 @@
         <output>0.25</output>
     </div><br>
     </div>
-
-    <div class="boxed">
-    <!--3rd group of parameters-->
-    <h3>The Infectious Person</h3>
-    
-    <!--x0 input: slider that depends on room length input-->
-    <div>
-        <label for="x0">x-coordinate(m)</label>
-        <input type="range" id="x0" name="x0" min="0" value="2.5" max="5" step="0.1"
-        oninput="this.nextElementSibling.value = this.value">
-        <output>2.5</output>
-    </div><br>
-    <!--y0 input: slider that depends on room width input-->
-    <div>
-        <label for="y0">y-coordinate(m)</label>
-        <input type="range" id="y0" name="y0" min="0" value="2.5" max="5" step="0.1"
-        oninput="this.nextElementSibling.value = this.value">
-        <output>2.5</output>
-    </div><br>
-
-    <!--infector's mask input: dropdown menu, with custom value option. also has an 'i' symbol that shows more information on hover.-->
-    <div>
-        <label for="inf-mask">Mask worn (efficiency)</label>
-        <select id="inf-mask" name="inf-mask" onchange="if(this.options[this.selectedIndex].value=='customOption'){
-            toggleField(this,this.nextSibling);
-            this.selectedIndex='0';
-        }">
-            <option value="0" selected> No mask</option>
-            <option value="0.35"> 1-ply Cloth mask (35%)</option>
-            <option value="0.5"> 3-ply Cloth mask (50%)</option>
-            <option value="0.59"> Surgical mask (59%)</option>
-            <option value="0.9"> N95/FFP2 mask (95%) </option>
-            <option value="customOption">[type a custom value]</option>
-        </select><input type="number" id="inf-mask-custom" name="inf-mask-custom" style="display:none;" min="0" max="100" step="0.1"
-        onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
-    </div>
-    <div class="show_details">i</div>
-    <div class="details"> disclaimer on mask efficacy. Varies depending on the manufacturing quality but also on how well they are worn </div>
-    <br>
-
-    <!--Percent of talking input: slider between 0 and 100. also has an 'i' symbol that shows more information on hover.-->
-    <div style="clear:left;">
-        <label for="talk">Percentage of time talking</label>
-        <input type="range" id="talk" name="talk" min="0" max="100" value="50" step="1"
-        oninput="this.nextElementSibling.value = this.value">
-        <output>50</output>
-    </div>
-    <div class="show_details">i</div>
-    <div class="details"> talking releases significantly more infectious particles </div>
-    <br>
-
-    <!--viral load input: dropdown menu, with custom value option. also has an 'i' symbol that shows more information on hover.-->
-    <div style="clear:left;">
-    <label for="viral-load">Viral load (virus/mL)</label>
-    <select id="viral-load" name="viral-load" onchange="if(this.options[this.selectedIndex].value=='customOption'){
-        toggleField(this,this.nextSibling);
-        this.selectedIndex='0';
-    }">
-        <option value="4"> Low (10^4)</option>
-        <option value="7"> Average (10^7))</option>
-        <option value="9" selected> High (10^9))</option>
-        <option value="12"> Very high (10^12))</option>
-        <option value="customOption">[type a custom value]</option>
-        </select><input type="number" id="viral-load-custom" name="viral-load-custom" style="display:none;" min="0" 
-        onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
-    </div>
-    <div class="show_details">i</div>
-    <div class="details"> explain viral load </div>
-    <br>
-    </div> 
     
     <div style="clear:left"> <button type="button" onclick="advanced_options()"> Advanced options </button> <p> </p> </div>
     <!-- 4th group of parameters: hidden by default. Shown only on button click.-->
     <div name="advanced-options" id="advanced-options" class="boxed" style="display:none">
-    <h3>Virus Properties</h3>
+    <h3>Advanced Options</h3>
     
+    <!-- particle emission rate for breathing -->
+    <div style="clear:left;"> 
+        <label for="emission"> Respiratory droplet emission rate for breathing (particles/min)</label>
+        <input type="number" name="emission" id="emission" value="480" min="0"> 
+    </div>  
+            
+    <!--viral load input: dropdown menu, with custom value option. also has an 'i' symbol that shows more information on hover.-->
+    <div style="clear:left;">
+        <label for="viral-load">Viral load of infectious person (virus/mL)</label>
+        <select id="viral-load" name="viral-load" onchange="if(this.options[this.selectedIndex].value=='customOption'){
+            toggleField(this,this.nextSibling);
+            this.selectedIndex='0';
+        }">
+            <option value="4"> Low (10^4)</option>
+            <option value="7"> Average (10^7))</option>
+            <option value="9" selected> High (10^9))</option>
+            <option value="12"> Very high (10^12))</option>
+            <option value="customOption">[custom value]</option>
+            </select><input type="number" id="viral-load-custom" name="viral-load-custom" style="display:none;" min="0" 
+            onblur="if(this.value==''){toggleField(this,this.previousSibling);}"> </input>
+        </div>
+        <div class="show_details">i</div>
+        <div class="details"> explain viral load </div>
+        <br>
+
     <!-- virus deactivation rate input: number. also has an 'i' symbol that shows more information on hover. -->
-    <div>
+    <div style="clear:left;"> 
         <label for="deact">Virus deactivation rate (1/h)</label>
         <input type="number" name="deact" id="deact" value="0.636" min="0"> 
     </div><div class="show_details">i</div>
     <div class="details"> explain viral deactivation </div><br>
 
+    <div style="clear:left;"> 
+        <label for="settle">Gravitational settling rate (1/h)</label>
+        <input type="number" name="settle" id="settle" value="0.122" min="0"> 
+    </div><div class="show_details">i</div>
+    <div class="details"> explain gravitational settling deactivation </div><br>
+
+    <!-- infectious constant -->
+    <div style="clear:left">
+        <label for="Inf-Const"> Median Infectious Dose </label>
+        <input type="number" name="Inf-Const" id="Inf-Const" value="100" min="1"> 
+    </div><div class="show_details">i</div>
+    <div class="details"> the number of virus inhaled that infects 50% of the population</div><br>
+    </div>
+
     <!-- transmissibility factor input: number. also has an 'i' symbol that shows more information on hover. -->
+    <!--
     <div style="clear:left">
         <label for="transmissibility">Transmissibility compared with original SARS-CoV-2</label>
         <input type="number" id="transmissibility" name="transmissibility" min="-100" value="50" style="width:50px"> % more infectious
     </div><div class="show_details">i</div>
-    <div class="details"> explain transmissibility option </div><br>
-    
+    <div class="details"> explain transmissibility option. Original SARS-CoV-2 is assumed to have  </div><br>
+    -->
+
+    </div>
+
+    <div name="step-size" id="step-size" class="boxed" style="display:none">
+        <h3>Step sizes</h3>
+        <p style="width:325px;"> <b>Warning</b>: making these too small will cause the calculation of the infection risk in the room to be extremely slow.</p>
+
+        <div>
+        <label for="delta-x"> Delta x (m) </label>
+        <input type="number" name="delta-x" id="delta-x" value="0.1" min="0" max="1"> 
+        </div>
+
+        <div>
+            <label for="delta-y"> Delta y (m) </label>
+            <input type="number" name="delta-y" id="delta-y" value="0.1" min="0" max="1"> 
+            </div>
+
+        <div>
+            <label for="delta-t"> Delta t (s) </label>
+            <input type="number" name="delta-t" id="delta-t" value="1" min="0" max="20"> 
+        </div>
+
     </div>
 
     <div class="boxed">
     <!--Last box: has run button. and toggle buttons to select the type of graph produced.-->
 
     <!-- the run button; changes depending on the risk-concentration toggle-->
-    <div class="center_button"> <button type="button" id="run-risk" style="display:block" onclick="run_risk()">Run</button> </div>
-    <div class="center_button"><button type="button" id="run-conc" style="display:none" onclick="run_conc()">Run</button> </div>
+    <div class="center_button"> <button type="button" id="run-risk" style="display:block" onclick="run_risk()">Run risk</button> </div>
+    <div class="center_button"><button type="button" id="run-conc" style="display:none" onclick="run_conc()">Run conc</button> </div>
 
     <!-- risk-concentration toggle -->
     <p> </p>
-    <div>Calculate infection risk <label class="switch">
+    <div style="float:left">
+        <label for="risk=conc">Calculate</label>
+        <select id="risk=conc" name="risk=conc" onchange="model_choice2()">
+            <option value="0" selected >infection risk</option>
+            <option value="1">concentration</option>
+        </select>
+    </div>
+    <!--<div>Calculate infection risk <label class="switch">
         <input type="checkbox" id="risk-or-conc" onclick="model_choice()">
         <span class="slider"></span>
         </label> concentration
-    </div> <br>
+    </div> -->
+    <br>
 
     <!-- contour-point toggle: if selected, shows x_e and y_e inputs (sliders that depend on room-length and room-width).-->
-    <div>
+    <div style="float:right;">
+        <select id="contour=point" name="contour=point" style="text-align:right"  onchange="graph_choice2()">
+            <option value="0" selected >throughout the room</option>
+            <option value="1">at a specific location in the room.</option>
+        </select>
+    </div>
+    <!--<div>
     throughout the room <label class="switch">
         <input type="checkbox" id="contour-or-point" onclick="graph_choice()">
         <span class="slider"></span>
         </label> at a specific location in the room. 
-    </div><br>
+    </div>-->
+    <br> 
 
     <div id="coord-eval" style="display:none">
         <div>

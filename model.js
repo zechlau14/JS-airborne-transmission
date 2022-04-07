@@ -1,7 +1,7 @@
 //Defining Functions
-const I_o = 0.0069; // Infectious constant
+//const I_o = 0.0069; // Infectious constant
 
-function P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y){
+function P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y,R_b,I_o){
     //Calculates infection risk at a given time throughout the room
     //returns an Array of size (len(y) * len(x)), where P_contour[y][x] is the z-data for the Infection risk contour graph at (x,y)
     //Required inputs from user form: R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,mask_in,frac_speak, time, delta_t, delta_x, delta_y
@@ -51,7 +51,7 @@ function P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_s
 
     let sink = sinks(t,Q,s,d);
 
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
 
     let V = l*w*h;
     let K = 0.39*V*Q*(2*V*0.059)**(-1/3);
@@ -77,7 +77,7 @@ function P_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_s
     return result;
 }
 
-function C_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y){
+function C_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y,R_b){
     //Calculates concentration at a given time throughout the room
     //returns an Array of size (len(y) * len(x)), where C_contour[y][x] is the z-data for the Concentration contour plot at (x,y)
     //Required inputs from user form: R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t, delta_x, delta_y
@@ -126,7 +126,7 @@ function C_contour(time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t
 
     let sink = sinks(t,Q,s,d);
 
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
 
     let V = l*w*h;
     let K = 0.39*V*Q*(2*V*0.059)**(-1/3);
@@ -168,7 +168,7 @@ function avg(result,l,w,delta_x,delta_y){
     return average;
 }
 
-function C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t){
+function C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,R_b){
     //Calculates the concentration at (x,y)
     //Returns array of len(t), which is the y-data of the line graph for Concentration vs Time
     //Required inputs from user form: R,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t
@@ -178,7 +178,7 @@ function C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t){
     let t = t_array(time,delta_t);
     
     let I = Impulse(t,x,y,x_o,y_o,l,w,h,v_x,v_y,Q,d,s);
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
     let result = convolve(I,S);
     for (let i=0; i<result.length; i++){
         result[i] = result[i] / (h/2);
@@ -187,7 +187,7 @@ function C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t){
     return result;
 }
 
-function Prob(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in){
+function Prob(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in,R_b,I_o){
     //Function to calculate infection risk at (x,y)
     //returns an array of len(t), which is the y-data of the line graph for Infection Risk vs Time line graph
     //Required inputs from user form: R,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t
@@ -195,7 +195,7 @@ function Prob(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,
     p = p*0.001/60;
 
     let t = t_array(time,delta_t);
-    let C_result = C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t);
+    let C_result = C(R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,R_b);
     
     let numInt = cumtrapz(t,C_result);
     let prob = new Array();
@@ -217,7 +217,7 @@ function t_graph(time,delta_t){
     return t_chart;
 }
 
-function C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t){
+function C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,R_b){
     //Calculates the concentration at (x,y)
     //Returns array of len(t), which is the y-data of the line graph for Concentration vs Time
     //Required inputs from user form: R,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t
@@ -226,7 +226,7 @@ function C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mas
     
     time_final = time + time_break + time_cont;
     let t = t_array(time_final,delta_t);
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
     let t_1 = time*3600 / delta_t;
     t_1 = parseInt(t_1);
     let t_2 = t_1 + 3600*time_break / delta_t;
@@ -240,31 +240,10 @@ function C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mas
         result[i] = result[i] / (h/2);
         result[i] = round(result[i]);
     }
-    /*
-    let t1 = t_array(time+time_break+time_cont, delta_t);
-    let t2 = t_array(time_cont,delta_t);
-
-    let I1 = Impulse(t1,x,y,x_o,y_o,l,w,h,v_x,v_y,Q,d,s);
-    let I2 = Impulse(t2,x,y,x_o,y_o,l,w,h,v_x,v_y,Q,d,s);
-
-    let S1 = Source(R,t1,mask_ex,frac_speak);
-    let t_break = parseInt(time*3600/delta_t);
-    let t_cont = parseInt((time+time_break)*3600/delta_t);
-    for(i=t_break;i<t_cont;i++){S1[i] = 0;}
-    let S2 = Source(R,t2,mask_ex,frac_speak);
-    
-    result = [];
-    for(i=0;i<t1.length;i++){
-        temp = 0;
-        for(j=0;j<i+1;j++){
-            temp = temp + S1[j] * I1[i-j]
-        }
-        result[i] = temp;
-    }*/
     return result;
 }
 
-function Prob_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in){
+function Prob_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,p,r,mask_in,R_b,I_o){
     //Function to calculate infection risk at (x,y)
     //returns an array of len(t), which is the y-data of the line graph for Infection Risk vs Time line graph
     //Required inputs from user form: R,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t
@@ -273,7 +252,7 @@ function Prob_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,
 
     time_final = time + time_break + time_cont;
     let t = t_array(time_final,delta_t);
-    let C_result = C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t);
+    let C_result = C_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,R_b);
 
     let numInt = cumtrapz(t,C_result);
     let prob = new Array();
@@ -283,7 +262,7 @@ function Prob_break(time_break,time_cont,R,time,x,y,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,
     return prob;
 }
 
-function C_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y){
+function C_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak,delta_t,delta_x,delta_y,R_b){
     //Calculates concentration at a given time throughout the room
     //returns an Array of size (len(y) * len(x)), where C_contour[y][x] is the z-data for the Concentration contour plot at (x,y)
     //Required inputs from user form: R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,frac_speak, delta_t, delta_x, delta_y
@@ -301,7 +280,7 @@ function C_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h
     
     time_final = time + time_break + time_cont;
     let t = t_array(time_final,delta_t);
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
     let t_1 = time*3600 / delta_t;
     t_1 = parseInt(t_1);
     let t_2 = t_1 + 3600*time_break / delta_t;
@@ -364,7 +343,7 @@ function C_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h
     return result;
 }
 
-function P_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y){
+function P_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,p,r,mask_ex,mask_in,frac_speak,delta_t,delta_x,delta_y,R_b,I_o){
     //Calculates infection risk at a given time throughout the room
     //returns an Array of size (len(y) * len(x)), where P_contour[y][x] is the z-data for the Infection risk contour graph at (x,y)
     //Required inputs from user form: R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h,mask_ex,mask_in,frac_speak, time, delta_t, delta_x, delta_y
@@ -416,7 +395,7 @@ function P_break_contour(time_break,time_cont,time,R,x_o,y_o,l,w,v_x,v_y,Q,d,s,h
 
     let sink = sinks(t,Q,s,d);
 
-    let S = Source(R,t,mask_ex,frac_speak);
+    let S = Source(R,t,mask_ex,frac_speak,R_b);
     let t_1 = time*3600 / delta_t;
     t_1 = parseInt(t_1);
     let t_2 = t_1 + 3600*time_break / delta_t;
@@ -489,13 +468,13 @@ function y_array(w,delta_y){
     return y;
 }
 
-function Source(R,t,mask_ex,frac_speak){
+function Source(R,t,mask_ex,frac_speak,R_b){
     // Define Source Function (returns array of len(t))
     // Required input 
     let q = Math.PI / 6 * 125 * 10**(R-12);
     if(q<1){
-        q = q*8;
-    } else{q=8;}
+        q = q*R_b;
+    } else{q=R_b;}
 
     let n_t = t.length;
     let delta_t = t[1] - t[0];
@@ -506,13 +485,13 @@ function Source(R,t,mask_ex,frac_speak){
     return S;
 }
 
-function Source_break(R,t,mask_ex,frac_speak){
+function Source_break(R,t,mask_ex,frac_speak,R_b){
     // Define Source Function (returns array of len(t))
     // Required input 
     let q = Math.PI / 6 * 125 * 10**(R-12);
     if(q<1){
-        q = q*8;
-    } else{q=8;}
+        q = q*R_b;
+    } else{q=R_b;}
 
     let n_t = t.length;
     let delta_t = t[1] - t[0];
