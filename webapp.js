@@ -32,7 +32,7 @@ function graph_choice2(){
     //check result of dropdown switch "contour-or-point"
     //if box is checked show inputs for coordinates; else hide
 
-    var checkBox = document.getElementById("contour=point".value);
+    var checkBox = document.getElementById("contour=point").value;
     var coord_input = document.getElementById("coord-eval");
 
     if(checkBox == 0){
