@@ -103,6 +103,8 @@ function run_risk(){
     avg_print.innerHTML="";
     const inf_print = document.getElementById("infected");
     inf_print.innerHTML="";
+    const cadr_print = document.getElementById("purifier");
+    cadr_print.innerHTML="";
 
     //Show the "loading" image in the output section.
     const output = document.getElementById("output");
@@ -262,6 +264,7 @@ function run_risk(){
         }];
         Plotly.newPlot(chart,datapt,{margin:{t:0}});
     }
+    CADR();
 
         $("#loading").hide();
     },1);
@@ -276,6 +279,8 @@ function run_conc(){
     avg_print.innerHTML="";
     const inf_print = document.getElementById("infected");
     inf_print.innerHTML="";
+    const cadr_print = document.getElementById("purifier");
+    cadr_print.innerHTML="";
 
     //show loading screen in output div
     const output = document.getElementById("output");
@@ -434,6 +439,7 @@ function run_conc(){
         }];
         Plotly.newPlot(chart,datapt,{margin:{t:0}});
     }
+    CADR();
     $("#loading").hide();
     },1);
 }
@@ -482,3 +488,31 @@ function pass_y_coord(){
     y_e.value = w/4;
     y_e.nextElementSibling.value = y_e.value;
 }
+
+function CADR(){
+    var l = document.getElementById("room-length").value;
+    l = parseFloat(l);    
+    var w = document.getElementById("room-width").value;
+    w = parseFloat(w);    
+    var h = document.getElementById("room-height").value;
+    h = parseFloat(h); 
+    var Q_c = document.getElementById("vent-custom").value;
+    if(Q_c>0){
+        var Q = parseFloat(Q_c);
+    }else{
+        var Q = document.getElementById("vent").value;
+        Q = parseFloat(Q); 
+    } 
+
+    var Vol = l*w*h;
+    var diff = 6 - Q;
+
+    var target = diff*Vol;
+    //var cfm = round(target / 1.699);
+    target = round(target);
+
+    var cadr_print2 = document.getElementById("purifier");
+    //cadr_print2.innerHTML= "<p> Based on the conventional Wells-Riley model, a purifier placed towards the centre of the room requires a Clean Air Delivery Rate (CADR) of " + target + " m^3/h, ie. " + cfm + " cfm, to achieve a target ACH of 6. </p>";
+    cadr_print2.innerHTML = "<p> Based on the conventional Wells-Riley model, a purifier placed towards the centre of the room requires a Clean Air Delivery Rate (CADR) of <output>" + target + "</output> m^3/h to achieve a target ACH of <input type='number' value='6' min='0' step='0.01' style='width:45px' oninput='this.previousElementSibling.value = (this.value-"+Q+")*"+Vol+"';> </input>.</p>";
+}
+
